@@ -1,7 +1,9 @@
 
 
 var app = {
-  server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages'
+  server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
+  dropDownList: [],
+  roomMessages: [],
 };
 
 app.init = function() {
@@ -28,7 +30,6 @@ app.send = function(message) {
 RegExp.quote = function(str) {
     return (str+'').replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
 };
-
 
 // List of HTML entities for escaping.
 var htmlEscapes = {
@@ -84,6 +85,7 @@ app.renderMessage = function(message) {
   
   tweet.append('<span class=message>' + escapedText + '</span>');
   tweet.append('<span class=username> - ' + escapedUsername + '</span>');
+  
   tweet.addClass(excapedRoom); 
   tweet.addClass(escapedUsername);  
   
@@ -108,19 +110,26 @@ app.renderMessage = function(message) {
   });
 };
 
-
 app.renderRoom = function(message) {
   var rooms = $('.dropdown-content').children().html();
-  console.log(rooms);
-  var duplicateRoomname = false;
-  for (var i = 0; i < rooms.length; i++) {
-    if (rooms[i] === message.roomname) {
-      duplicateRoomname = true;
-    }
-  }
-  if (!duplicateRoomname) {
-    $('.dropdown-content').prepend('<a href="#">' + message.roomname + '</a>');
-  }
+  var dropElem = $('<a class= "dropDownElement">' + message.roomname + '</a>');
+  dropElem.click(function(){
+    console.log(this);
+    var desiredRoom = this.textContent;
+    $('#chats').filter('.'+ desiredRoom);
+    console.log(desiredRoom);
+    //app.clearMessages();
+  //$('' + message.roomname).
+    //show messages belonging to selected room.
+    //app.fetch();
+  })
+  //console.log(rooms);
+  app.dropDownList.push(rooms);
+  //console.log(dropDownList);
+  if(!app.dropDownList.includes(message.roomname)){
+    //$('.dropdown-content').prepend('<a href="#" class="dropDownElement">' + message.roomname + '</a>');
+    $('.dropdown-content').prepend(dropElem);
+  }        
 };
 
 //Begin document functions
